@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>كُمَيْت | Comaiit Flowers POS</title>
+  <!-- Google Fonts: Cairo & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#5a1818',
+              dark: '#421010',
+              light: '#7b2424',
+              cream: '#fbf9f8',
+              gold: '#c59b27'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    [dir="rtl"] { font-family: 'Cairo', system-ui, sans-serif; }
+    [dir="ltr"] { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    @media print {
+      body * { visibility: hidden; }
+      #printable-receipt, #printable-receipt * { visibility: visible; }
+      #printable-receipt { position: absolute; left: 0; top: 0; width: 80mm; margin: 0 auto; }
+    }
+  </style>
+</head>
+<body class="bg-[#fbf9f8] text-stone-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-[#5a1818] text-white shadow-md border-b border-[#421010]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20 gap-4">
+        
+        <!-- Brand Lockup -->
+        <div onclick="switchView('pos')" class="flex items-center gap-3 cursor-pointer group">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden shadow-sm border border-white/20 bg-[#421010] flex items-center justify-center">
+            <img src="/assets/aistudio/d0d50e28c3b56d04b8ce5b3568658139_tplv-tiktokx-cropcenter_1080_1080_a5199097.jpeg" alt="Logo" class="w-full h-full object-cover">
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-black text-xl sm:text-2xl text-white font-['Cairo']">كُمَيْت</span>
+              <span class="text-xs sm:text-sm font-semibold tracking-wider text-rose-200 uppercase">Comaiit</span>
+            </div>
+            <span id="header-tagline" class="text-[11px] text-amber-200/90 font-light">يُترجم مشاعرك</span>
+          </div>
+        </div>
+
+        <!-- Center Nav -->
+        <nav class="hidden md:flex items-center gap-1.5 p-1 bg-[#421010]/80 rounded-xl border border-white/10">
+          <button id="nav-pos" onclick="switchView('pos')" class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-bold bg-white text-[#5a1818] shadow-sm">
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            <span id="nav-pos-text">نقطة البيع</span>
+            <span id="nav-cart-badge" class="hidden px-1.5 py-0.5 text-xs font-bold bg-[#5a1818] text-white rounded-full">0</span>
+          </button>
+          <button id="nav-sales" onclick="switchView('sales')" class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium text-rose-100 hover:text-white">
+            <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+            <span id="nav-sales-text">تقرير المبيعات</span>
+          </button>
+          <button id="nav-admin" onclick="switchView('admin')" class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium text-rose-100 hover:text-white">
+            <i data-lucide="settings" class="w-4 h-4"></i>
+            <span id="nav-admin-text">إدارة المخزون</span>
+          </button>
+        </nav>
+
+        <!-- Right Action Tools: Translate Icon and Three-Line Admin Button -->
+        <div class="flex items-center gap-2 sm:gap-2.5">
+          <!-- Stock Toggle -->
+          <button id="stock-toggle-btn" onclick="toggleStockVisibility()" class="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/30 bg-white/15 text-white cursor-pointer">
+            <i data-lucide="eye" class="w-3.5 h-3.5 text-emerald-300"></i>
+            <span id="stock-toggle-text">المخزون ظاهر</span>
+          </button>
+
+          <!-- Download APK Button -->
+          <a href="/APK_DOWNLOAD/app-debug.apk" download class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-400 text-stone-950">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>APK</span>
+          </a>
+
+          <!-- Small Translate Symbol Button -->
+          <button onclick="toggleLanguage()" class="flex items-center gap-1.5 p-2 sm:px-2.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold bg-white/15 hover:bg-white/25 border border-white/20 text-white cursor-pointer" title="Translate">
+            <i data-lucide="languages" class="w-4 h-4 text-amber-300"></i>
+            <span id="lang-btn-text">EN</span>
+          </button>
+
+          <!-- Three-Line Button (Hamburger / 3 lines) to open Admin Panel -->
+          <button onclick="switchView('admin')" class="flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl text-sm font-bold bg-white/15 hover:bg-white/25 border border-white/20 text-white cursor-pointer" title="Admin Panel">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+            <span class="hidden sm:inline text-xs font-bold">Admin</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Container -->
+  <main id="app-content" class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6"></main>
+
+  <script>
+    // State
+    let currentLang = 'ar';
+    let currentView = 'pos';
+    let showStock = true;
+    let selectedCategory = 'all';
+    let products = [
+      { id: '1', nameAr: 'ورد جوري أحمر إكوادوري', nameEn: 'Ecuadorian Red Rose', category: 'flower', standardPrice: 18, discountedPrice: 14, stock: 145, img: '/src/assets/images/flower_red_rose_1793182282218.jpg' },
+      { id: '2', nameAr: 'زنبق أبيض كازابلانكا', nameEn: 'Casablanca White Lily', category: 'flower', standardPrice: 35, discountedPrice: 28, stock: 58, img: '/src/assets/images/flower_white_lily_1793182281937.jpg' },
+      { id: '3', nameAr: 'أوركيد فالينوبسيس ملكي', nameEn: 'Royal Phalaenopsis Orchid', category: 'flower', standardPrice: 85, discountedPrice: 70, stock: 24, img: '/src/assets/images/flower_orchid_white_1793182282409.jpg' },
+      { id: '4', nameAr: 'توليب هولندي باستيل', nameEn: 'Dutch Pastel Tulip', category: 'flower', standardPrice: 22, discountedPrice: 18, stock: 80, img: '/src/assets/images/flower_tulip_pastel_1793182282947.jpg' },
+      { id: '5', nameAr: 'باقة كُمَيْت الفاخرة المنسقة', nameEn: 'Comaiit Signature Bouquet', category: 'bouquet', standardPrice: 240, discountedPrice: 195, stock: 18, img: '/src/assets/images/flower_red_rose_1793182282218.jpg' },
+      { id: '6', nameAr: 'باقة حكاية مشاعر الوردية', nameEn: 'Feelings Tale Pastel Box', category: 'bouquet', standardPrice: 180, discountedPrice: 150, stock: 12, img: '/src/assets/images/flower_tulip_pastel_1793182282947.jpg' },
+      { id: '7', nameAr: 'آيس سبانش لاتيه كُمَيْت', nameEn: 'Comaiit Iced Spanish Latte', category: 'coffee', standardPrice: 26, discountedPrice: 22, stock: 80, img: '/src/assets/images/coffee_saudi_latte_1793183277320.jpg' },
+      { id: '8', nameAr: 'قهوة سعودية أصيلة بالهيل والزعفران', nameEn: 'Traditional Saudi Dallah Coffee', category: 'coffee', standardPrice: 32, discountedPrice: 26, stock: 45, img: '/src/assets/images/coffee_saudi_latte_1793183277320.jpg' },
+      { id: '9', nameAr: 'فازة سيراميك مضلعة نحتية', nameEn: 'Ribbed Sculptural Ceramic Faza', category: 'faza', standardPrice: 120, discountedPrice: 95, stock: 25, img: '/src/assets/images/faza_luxury_vase_1793183277028.jpg' },
+      { id: '10', nameAr: 'فازة كريستال فاخرة مذهبة', nameEn: 'Royal Gilded Crystal Faza', category: 'faza', standardPrice: 165, discountedPrice: 135, stock: 16, img: '/src/assets/images/faza_luxury_vase_1793183277028.jpg' },
+    ];
+    let cart = [];
+    let orders = [];
+
+    function render() {
+      // Re-render current view and re-init icons
+      const container = document.getElementById('app-content');
+      if (currentView === 'pos') {
+        const filtered = products.filter(p => selectedCategory === 'all' || p.category === selectedCategory);
+        container.innerHTML = `
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-4">
+              <!-- 4 Category Options in English with Logos -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 bg-white p-3.5 rounded-2xl border border-stone-200">
+                <button onclick="setCategory('flower')" class="flex items-center gap-2.5 p-3 rounded-xl border transition-all ${selectedCategory === 'flower' ? 'bg-[#5a1818] text-white border-[#421010] shadow-sm' : 'bg-stone-50 hover:bg-stone-100 text-stone-800 border-stone-200'}">
+                  <i data-lucide="flower-2" class="w-5 h-5 ${selectedCategory === 'flower' ? 'text-amber-200' : 'text-[#5a1818]'}"></i>
+                  <div class="text-left">
+                    <div class="font-extrabold text-sm leading-tight">Flower</div>
+                    <div class="text-[10px] ${selectedCategory === 'flower' ? 'text-rose-100' : 'text-stone-400'}">زهور طبيعية</div>
+                  </div>
+                </button>
+                <button onclick="setCategory('bouquet')" class="flex items-center gap-2.5 p-3 rounded-xl border transition-all ${selectedCategory === 'bouquet' ? 'bg-[#5a1818] text-white border-[#421010] shadow-sm' : 'bg-stone-50 hover:bg-stone-100 text-stone-800 border-stone-200'}">
+                  <i data-lucide="sparkles" class="w-5 h-5 ${selectedCategory === 'bouquet' ? 'text-amber-200' : 'text-[#5a1818]'}"></i>
+                  <div class="text-left">
+                    <div class="font-extrabold text-sm leading-tight">Bouquet</div>
+                    <div class="text-[10px] ${selectedCategory === 'bouquet' ? 'text-rose-100' : 'text-stone-400'}">باقات فاخرة</div>
+                  </div>
+                </button>
+                <button onclick="setCategory('coffee')" class="flex items-center gap-2.5 p-3 rounded-xl border transition-all ${selectedCategory === 'coffee' ? 'bg-[#5a1818] text-white border-[#421010] shadow-sm' : 'bg-stone-50 hover:bg-stone-100 text-stone-800 border-stone-200'}">
+                  <i data-lucide="coffee" class="w-5 h-5 ${selectedCategory === 'coffee' ? 'text-amber-200' : 'text-[#5a1818]'}"></i>
+                  <div class="text-left">
+                    <div class="font-extrabold text-sm leading-tight">Coffee</div>
+                    <div class="text-[10px] ${selectedCategory === 'coffee' ? 'text-rose-100' : 'text-stone-400'}">قهوة كُمَيْت</div>
+                  </div>
+                </button>
+                <button onclick="setCategory('faza')" class="flex items-center gap-2.5 p-3 rounded-xl border transition-all ${selectedCategory === 'faza' ? 'bg-[#5a1818] text-white border-[#421010] shadow-sm' : 'bg-stone-50 hover:bg-stone-100 text-stone-800 border-stone-200'}">
+                  <svg class="w-5 h-5 shrink-0 ${selectedCategory === 'faza' ? 'text-amber-200' : 'text-[#5a1818]'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 4h6" />
+                    <path d="M10 4v2c-2.5 2-3.5 5-3.5 8a5.5 5.5 0 0 0 11 0c0-3-1-6-3.5-8V4" />
+                    <path d="M9.5 20h5" />
+                    <circle cx="12" cy="1" r="1" fill="currentColor" />
+                  </svg>
+                  <div class="text-left">
+                    <div class="font-extrabold text-sm leading-tight">Faza</div>
+                    <div class="text-[10px] ${selectedCategory === 'faza' ? 'text-rose-100' : 'text-stone-400'}">فازات ومزهريات</div>
+                  </div>
+                </button>
+              </div>
+
+              <!-- Product Grid -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                ${filtered.map(p => `
+                  <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-xs p-3 flex flex-col justify-between">
+                    <img src="${p.img}" class="w-full aspect-[4/3] object-cover rounded-xl mb-2">
+                    <div>
+                      <h4 class="font-bold text-sm text-stone-900">${currentLang === 'ar' ? p.nameAr : p.nameEn}</h4>
+                      ${showStock ? `<span class="text-xs text-stone-500">${p.stock} ${currentLang === 'ar' ? 'متوفر' : 'in stock'}</span>` : ''}
+                    </div>
+                    <div class="grid grid-cols-2 gap-1.5 mt-3 pt-2 border-t border-stone-100">
+                      <button onclick="addToCart('${p.id}', 'standard')" class="p-1.5 rounded-lg border border-stone-200 text-center hover:bg-[#5a1818] hover:text-white transition-colors">
+                        <div class="text-[10px] text-stone-500">${currentLang === 'ar' ? 'قياسي' : 'Std'}</div>
+                        <div class="text-xs font-bold">${p.standardPrice} SAR</div>
+                      </button>
+                      <button onclick="addToCart('${p.id}', 'discounted')" class="p-1.5 rounded-lg border border-amber-200 bg-amber-50 text-center hover:bg-amber-600 hover:text-white transition-colors">
+                        <div class="text-[10px] text-amber-700">${currentLang === 'ar' ? 'مخفض' : 'Disc'}</div>
+                        <div class="text-xs font-bold text-amber-900">${p.discountedPrice} SAR</div>
+                      </button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+            <div class="bg-white rounded-3xl border border-stone-200 p-4 shadow-sm flex flex-col justify-between h-fit">
+              <div>
+                <h3 class="font-bold text-base mb-3">${currentLang === 'ar' ? 'سلة الطلب والدفع' : 'Current Order & Payment'}</h3>
+                <div class="space-y-2 mb-4">
+                  ${cart.length === 0 ? `<div class="text-center py-8 text-stone-400 text-xs">${currentLang === 'ar' ? 'السلة فارغة' : 'Cart is empty'}</div>` : cart.map((it, idx) => `
+                    <div class="flex items-center justify-between p-2 rounded-xl bg-stone-50 text-xs">
+                      <div>
+                        <div class="font-bold">${currentLang === 'ar' ? it.nameAr : it.nameEn}</div>
+                        <div class="text-stone-400">${it.quantity}x @ ${it.price} SAR (${it.tier})</div>
+                      </div>
+                      <div class="font-bold text-sm">${it.quantity * it.price} SAR</div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+              <!-- 1-10 Keypad with Cross Button -->
+              <div class="p-3 bg-stone-50 rounded-2xl border border-stone-200 space-y-2">
+                <div class="text-[11px] font-bold text-stone-500 flex justify-between items-center">
+                  <span>${currentLang === 'ar' ? 'حدد الكمية (1 - 10):' : 'Select Quantity (1 - 10):'}</span>
+                  <span class="text-stone-400 text-[10px]">${currentLang === 'ar' ? 'أو مسح بـ ✕' : 'or clear with ✕'}</span>
+                </div>
+                <div class="grid grid-cols-5 gap-1.5">
+                  ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => `
+                    <button onclick="setLastItemQty(${n})" class="h-9 rounded-lg bg-white border border-stone-200 hover:border-[#5a1818] font-bold text-xs active:scale-95 shadow-2xs">${n}</button>
+                  `).join('')}
+                </div>
+                <div class="flex justify-end">
+                  <button onclick="clearCart()" class="py-1 px-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 font-bold text-xs flex items-center gap-1 active:scale-95 cursor-pointer">
+                    <i data-lucide="x" class="w-3.5 h-3.5 stroke-[3]"></i>
+                    <span>${currentLang === 'ar' ? 'مسح (✕)' : 'Clear (✕)'}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="border-t border-stone-200 pt-3 space-y-2">
+                <div class="flex justify-between font-bold text-base">
+                  <span>${currentLang === 'ar' ? 'المجموع شامل الضريبة:' : 'Total Incl. VAT:'}</span>
+                  <span class="text-[#5a1818]">${cart.reduce((s, it) => s + it.quantity * it.price, 0)} SAR</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 pt-2">
+                  <button onclick="checkout('cash')" class="py-2.5 rounded-xl bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1 cursor-pointer">
+                    <i data-lucide="banknote" class="w-4 h-4"></i>
+                    <span>${currentLang === 'ar' ? 'كاش / نقدي' : 'Cash'}</span>
+                  </button>
+                  <button onclick="checkout('card')" class="py-2.5 rounded-xl bg-[#5a1818] text-white font-bold text-xs flex items-center justify-center gap-1 cursor-pointer">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i>
+                    <span>${currentLang === 'ar' ? 'بطاقة / شبكة' : 'Card / Mada'}</span>
+                  </button>
+                </div>
+                <button onclick="checkout('card')" class="w-full py-3 rounded-xl bg-[#5a1818] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-sm">
+                  <i data-lucide="receipt" class="w-4 h-4 text-amber-300"></i>
+                  <span>${currentLang === 'ar' ? 'تأكيد الطلب (Confirm Order)' : 'Confirm Order & Pay'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      lucide.createIcons();
+    function setLastItemQty(qty) {
+      if (cart.length > 0) {
+        cart[cart.length - 1].quantity = qty;
+        render();
+      }
+    }
+
+    function clearCart() {
+      cart = [];
+      render();
+    }
+
+    function setCategory(cat) {
+      selectedCategory = cat;
+      render();
+    }
+
+    function addToCart(prodId, tier) {
+      const p = products.find(x => x.id === prodId);
+      if (!p) return;
+      const price = tier === 'standard' ? p.standardPrice : p.discountedPrice;
+      const existing = cart.find(x => x.id === prodId && x.tier === tier);
+      if (existing) existing.quantity++;
+      else cart.push({ id: prodId, nameAr: p.nameAr, nameEn: p.nameEn, price, tier, quantity: 1 });
+      render();
+    }
+
+    function checkout(paymentMethod) {
+      if (cart.length === 0) return;
+      const total = cart.reduce((s, it) => s + it.quantity * it.price, 0);
+      alert(currentLang === 'ar' ? `تم تسجيل الفاتورة بنجاح بمبلغ ${total} ر.س بطريقة دفع ${paymentMethod === 'cash' ? 'نقدي' : 'شبكة/مدى'}` : `Order completed for ${total} SAR paid by ${paymentMethod}`);
+      cart = [];
+      render();
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'ar' ? 'en' : 'ar';
+      document.documentElement.lang = currentLang;
+      document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      document.getElementById('lang-btn-text').textContent = currentLang === 'ar' ? 'English' : 'العربية';
+      render();
+    }
+
+    function toggleStockVisibility() {
+      showStock = !showStock;
+      document.getElementById('stock-toggle-text').textContent = showStock 
+        ? (currentLang === 'ar' ? 'المخزون ظاهر' : 'Stock Visible')
+        : (currentLang === 'ar' ? 'المخزون مخفي' : 'Stock Hidden');
+      render();
+    }
+
+    function switchView(view) {
+      currentView = view;
+      render();
+    }
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>

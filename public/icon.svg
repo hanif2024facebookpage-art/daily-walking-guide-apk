@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <rect width="512" height="512" rx="128" fill="#5a1818"/>
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="none" stroke="#e6ba7e" stroke-width="8" opacity="0.4"/>
+  <g transform="translate(256, 210) scale(1.6)">
+    <!-- Flower Petals -->
+    <path d="M0 -45 C-15 -20 -15 -10 0 0 C15 -10 15 -20 0 -45 Z" fill="#f59e0b" />
+    <path d="M0 45 C-15 20 -15 10 0 0 C15 10 15 20 0 45 Z" fill="#f59e0b" />
+    <path d="M-45 0 C-20 -15 -10 -15 0 0 C-10 15 -20 15 -45 0 Z" fill="#f59e0b" />
+    <path d="M45 0 C20 -15 10 -15 0 0 C10 15 20 15 45 0 Z" fill="#f59e0b" />
+    
+    <path d="M-32 -32 C-12 -28 -7 -12 0 0 C-12 -7 -28 -12 -32 -32 Z" fill="#fbbf24" />
+    <path d="M32 -32 C12 -28 7 -12 0 0 C12 -7 28 -12 32 -32 Z" fill="#fbbf24" />
+    <path d="M-32 32 C-12 28 -7 12 0 0 C-12 7 -28 12 -32 32 Z" fill="#fbbf24" />
+    <path d="M32 32 C12 28 7 12 0 0 C12 7 28 12 32 32 Z" fill="#fbbf24" />
+
+    <circle cx="0" cy="0" r="14" fill="#ffffff" />
+    <circle cx="0" cy="0" r="10" fill="#5a1818" />
+  </g>
+  <!-- Text Label -->
+  <text x="256" y="380" font-family="'Cairo', sans-serif" font-weight="900" font-size="52" fill="#ffffff" text-anchor="middle">كُمَيْت</text>
+  <text x="256" y="425" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="24" fill="#e6ba7e" letter-spacing="4" text-anchor="middle">COMAIIT POS</text>
+</svg>

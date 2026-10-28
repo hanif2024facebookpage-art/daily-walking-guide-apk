@@ -1,0 +1,38 @@
+{
+  "id": "/",
+  "name": "كُمَيْت | Comaiit Flowers POS",
+  "short_name": "Comaiit POS",
+  "description": "Bilingual Point of Sale and Inventory Management Web Application for Comaiit Flower Boutique in Saudi Arabia.",
+  "theme_color": "#5a1818",
+  "background_color": "#fbf9f8",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "/",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Remix  كُمَيْت | Comaiit Flowers POS",
+  "description": "Bilingual Point of Sale and Inventory Management Web Application for Comaiit (كُمَيْت) Flower Boutique in Saudi Arabia with dual-pricing, Arabic/English RTL support, and daily sales export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
